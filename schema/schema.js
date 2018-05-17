@@ -5,39 +5,46 @@ const {
     GraphQLObjectType,
     GraphQLString,
     GraphQLInt,
+    GraphQLList,
     GraphQLSchema
 } = graphql;
 
 // Collections on Server
 const companies = "companies", users = "users";
 
-const _getFromServer = (collection, id) => {
-    return axios.get(`http://localhost:3000/${collection}/${id}`)
+const _getFromServer = (path) => {
+    return axios.get(`http://localhost:3000/${path}`)
                     .then(response => response.data);
 };
 
 const CompanyType = new GraphQLObjectType({
     name: "Company",
-    fields: {
+    fields: () => ({
         id: {type: GraphQLString},
         name: {type: GraphQLString},
-        description: {type: GraphQLString}
-    }
+        description: {type: GraphQLString},
+        users: {
+            type: new GraphQLList(UserType),
+            resolve(parentValue, args) {
+                return _getFromServer(`${companies}/${parentValue.id}/${users}`);
+            }
+        }
+    })
 });
 
 const UserType = new GraphQLObjectType({
     name: "User",
-    fields: {
+    fields: () => ({
         id: {type: GraphQLString},
         firstName: {type: GraphQLString},
         age: {type: GraphQLInt},
         company: {
             type: CompanyType,
             resolve(parentValue, args) {
-                return _getFromServer(companies, parentValue.companyId);
+                return _getFromServer(`${companies}/${parentValue.companyId}`);
             }
         }
-    }
+    })
 });
 
 const RootQueryType = new GraphQLObjectType({
@@ -49,7 +56,7 @@ const RootQueryType = new GraphQLObjectType({
                 id: {type: GraphQLString}
             },
             resolve(parentValue, args) {
-                return _getFromServer(users, args.id);
+                return _getFromServer(`${users}/${args.id}`);
             }
         },
         company: {
@@ -58,7 +65,7 @@ const RootQueryType = new GraphQLObjectType({
                 id: {type: GraphQLString}
             },
             resolve(parentValue, args) {
-                return _getFromServer(companies, args.id);
+                return _getFromServer(`${companies}/${args.id}`);
             }
         }
     }
