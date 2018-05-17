@@ -18,6 +18,10 @@ JSON Server will be running on http://localhost:3000/
 
 `npm start`
 
+### Run in dev mode
+
+`npm run dev`
+
 GraphQL Server will be running on http://localhost:4000/
 
 
