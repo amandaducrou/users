@@ -6,6 +6,7 @@ const {
     GraphQLString,
     GraphQLInt,
     GraphQLList,
+    GraphQLNonNull,
     GraphQLSchema
 } = graphql;
 
@@ -71,6 +72,35 @@ const RootQueryType = new GraphQLObjectType({
     }
 });
 
+const MutationType = new GraphQLObjectType({
+    name: "Mutation",
+    fields: {
+        addUser: {
+            type: UserType,
+            args: {
+                firstName: {type: new GraphQLNonNull(GraphQLString)},
+                age: {type: new GraphQLNonNull(GraphQLInt)},
+                companyId: {type: GraphQLString}
+            },
+            resolve(parentValue, {firstName, age}) {
+                return axios.post(`http://localhost:3000/${users}`, {firstName, age})
+                    .then(response => response.data);
+            }
+        },
+        deleteUser: {
+            type: GraphQLString,
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLString)}
+            },
+            resolve(parentValue, {id}) {
+                return axios.delete(`http://localhost:3000/${users}/${id}`)
+                    .then(response => response.status);
+            }
+        }
+    }
+});
+
 module.exports = new GraphQLSchema({
-    query: RootQueryType
+    query: RootQueryType,
+    mutation: MutationType
 });
