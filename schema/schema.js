@@ -88,13 +88,26 @@ const MutationType = new GraphQLObjectType({
             }
         },
         deleteUser: {
-            type: GraphQLString,
+            type: UserType,
             args: {
                 id: {type: new GraphQLNonNull(GraphQLString)}
             },
             resolve(parentValue, {id}) {
                 return axios.delete(`http://localhost:3000/${users}/${id}`)
-                    .then(response => response.status);
+                    .then(response => response.data);
+            }
+        },
+        editUser: {
+            type: UserType,
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLString)},
+                firstName: {type: GraphQLString},
+                age: {type: GraphQLInt},
+                companyId: {type: GraphQLString}
+            },
+            resolve(parentValue, args) {
+                return axios.patch(`http://localhost:3000/${users}/${args.id}`, args)
+                    .then(response => response.data);
             }
         }
     }

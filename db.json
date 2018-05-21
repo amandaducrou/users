@@ -3,19 +3,30 @@
     {
       "firstName": "Amanda",
       "age": 37,
-      "id": "ucUrs4y"
+      "id": "ucUrs4y",
+      "companyId": "1"
+    },
+    {
+      "firstName": "Jon",
+      "age": 36,
+      "id": "EiTS8ZO"
+    },
+    {
+      "firstName": "Monty",
+      "age": 17,
+      "id": "S2PkEx2"
     }
   ],
   "companies": [
     {
       "id": "1",
-      "name": "Apple",
-      "description": "iphone"
+      "name": "Expedia",
+      "description": "travel"
     },
     {
       "id": "2",
-      "name": "Google",
-      "description": "search"
+      "name": "Amazon",
+      "description": "everything"
     }
   ]
 }
